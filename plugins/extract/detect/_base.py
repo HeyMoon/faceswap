@@ -16,7 +16,6 @@ import os
 import cv2
 import dlib
 
-from lib.faces_detect import DetectedFace
 from lib.gpu_stats import GPUStats
 from lib.utils import rotate_image_by_angle, rotate_landmarks
 
@@ -87,26 +86,7 @@ class Detector():
     def finalize(self, output):
         """ This should be called as the final task of each plugin
             Performs fianl processing and puts to the out queue """
-        detected_faces = self.to_detected_face(output["image"],
-                                               output["detected_faces"])
-        output["detected_faces"] = detected_faces
         self.queues["out"].put(output)
-
-    @staticmethod
-    def to_detected_face(image, dlib_rects):
-        """ Convert list of dlib rectangles to a
-            list of DetectedFace objects
-            and add the cropped face """
-        retval = list()
-        for d_rect in dlib_rects:
-            if not isinstance(d_rect, dlib.rectangle):
-                retval.append(list())
-                continue
-            detected_face = DetectedFace()
-            detected_face.from_dlib_rect(d_rect)
-            detected_face.image_to_face(image)
-            retval.append(detected_face)
-        return retval
 
     # <<< DETECTION IMAGE COMPILATION METHODS >>> #
     def compile_detection_image(self, image, is_square, scale_up):
@@ -136,6 +116,7 @@ class Detector():
 
     def set_detect_image(self, input_image):
         """ Convert the image to RGB and scale """
+        # pylint: disable=no-member
         image = input_image[:, :, ::-1].copy()
         if self.scale == 1.0:
             return image
@@ -220,7 +201,9 @@ class Detector():
     def is_mmod_rectangle(d_rectangle):
         """ Return whether the passed in object is
             a dlib.mmod_rectangle """
-        return isinstance(d_rectangle, dlib.mmod_rectangle)
+        return isinstance(
+            d_rectangle,
+            dlib.mmod_rectangle)  # pylint: disable=c-extension-no-member
 
     def convert_to_dlib_rectangle(self, d_rect):
         """ Convert detected mmod_rects to dlib_rectangle """
@@ -247,4 +230,5 @@ class Detector():
         # Landmarks should not be extracted again from predetected faces,
         # because face data is lost, resulting in a large variance
         # against extract from original image
-        return [dlib.rectangle(0, 0, width, height)]
+        return [dlib.rectangle(  # pylint: disable=c-extension-no-member
+            0, 0, width, height)]

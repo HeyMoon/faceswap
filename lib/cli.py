@@ -54,9 +54,9 @@ class ScriptExecutor():
                 "the GUI has been disabled. To enable the GUI please "
                 "install the TkInter application.\n\n"
                 "You can try:\n"
+                "  Anaconda:           conda install tk\n"
                 "  Windows/macOS:      Install ActiveTcl Community "
-                "Edition from "
-                "www.activestate.com\n"
+                "Edition from http://www.activestate.com\n"
                 "  Ubuntu/Mint/Debian: sudo apt install python3-tk\n"
                 "  Arch:               sudo pacman -S tk\n"
                 "  CentOS/Redhat:      sudo yum install tkinter\n"
@@ -274,7 +274,7 @@ class ExtractConvertArgs(FaceSwapArgs):
                               "help": "Output directory. This is where the "
                                       "converted files will be stored. "
                                       "Defaults to 'output'"})
-        argument_list.append({"opts": ("--alignments", ),
+        argument_list.append({"opts": ("-al", "--alignments"),
                               "action": FileFullPaths,
                               "filetypes": 'alignments',
                               "type": str,
@@ -583,12 +583,12 @@ class ConvertArgs(ExtractConvertArgs):
         argument_list.append({"opts": ("-sm", "--smooth-mask"),
                               "action": "store_true",
                               "dest": "smooth_mask",
-                              "default": True,
+                              "default": False,
                               "help": "Smooth mask (Adjust converter only)"})
         argument_list.append({"opts": ("-aca", "--avg-color-adjust"),
                               "action": "store_true",
                               "dest": "avg_color_adjust",
-                              "default": True,
+                              "default": False,
                               "help": "Average color adjust. "
                                       "(Adjust converter only)"})
         argument_list.append({"opts": ("-dt", "--draw-transparent"),
